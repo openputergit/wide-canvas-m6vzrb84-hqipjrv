@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Note Reminder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .love-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        .main-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        .heart {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="main-font bg-gradient-to-br from-pink-100 to-purple-100 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6 space-y-6">
+        <div class="text-center">
+            <i class="bi bi-heart-fill text-5xl text-pink-500 heart"></i>
+            <h1 class="love-font text-3xl font-bold text-gray-800 mt-4">Hey Anushka!</h1>
+        </div>
+
+        <div class="space-y-4">
+            <p class="text-gray-600 text-center love-font text-xl">Your boyfriend is waiting to talk to you!</p>
+            
+            <div class="bg-pink-50 p-4 rounded-lg">
+                <p class="text-gray-700 love-font text-lg text-center">You're the most precious person in my life. Your smile lights up my world, and every moment with you is a blessing. ✨</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-gray-700">Set a reminder to talk:</label>
+                <input type="datetime-local" id="reminderTime" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+                <button onclick="setReminder()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                    Set Reminder <i class="bi bi-bell-fill ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="notification" class="hidden fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg">
+            Reminder set successfully!
+        </div>
+    </div>
+
+    <script>
+        function setReminder() {
+            const reminderTime = document.getElementById('reminderTime').value;
+            if (!reminderTime) {
+                alert('Please select a time for the reminder');
+                return;
+            }
+
+            // Request permission for notifications
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+
+            const reminderDate = new Date(reminderTime);
+            const now = new Date();
+
+            if (reminderDate <= now) {
+                alert('Please select a future time');
+                return;
+            }
+
+            // Show success message
+            const notification = document.getElementById('notification');
+            notification.classList.remove('hidden');
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+
+            // Set the reminder
+            const timeUntilReminder = reminderDate.getTime() - now.getTime();
+            setTimeout(() => {
+                if (Notification.permission === 'granted') {
+                    new Notification('Love Reminder', {
+                        body: 'Your boyfriend is waiting to talk to you! ❤️',
+                        icon: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=50'
+                    });
+                }
+            }, timeUntilReminder);
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
